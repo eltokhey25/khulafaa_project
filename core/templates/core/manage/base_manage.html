@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}لوحة الإدارة{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'core/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'core/css/manage.css' %}">
+    <link rel="icon" type="image/jpeg" href="{% static 'core/images/logo.jpg' %}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="manage-body">
+    <div class="bg-pattern"></div>
+
+    {% if user.is_authenticated and user.is_staff %}
+    <header class="manage-topbar">
+        <div class="manage-topbar-inner">
+            <a href="{% url 'manage_dashboard' %}" class="manage-brand">
+                <img src="{% static 'core/images/logo.png' %}" alt="" class="manage-brand-logo">
+                <span>لوحة إدارة النتائج</span>
+            </a>
+            <nav class="manage-nav">
+                <a href="{% url 'manage_dashboard' %}" class="manage-nav-link{% if request.resolver_match.url_name == 'manage_dashboard' %} active{% endif %}">الطلاب</a>
+                <a href="{% url 'manage_add' %}" class="manage-nav-link{% if request.resolver_match.url_name == 'manage_add' %} active{% endif %}">إضافة طالب</a>
+                <a href="{% url 'search' %}" class="manage-nav-link" target="_blank" rel="noopener">عرض الموقع</a>
+                <form method="post" action="{% url 'manage_logout' %}" class="manage-logout-form">
+                    {% csrf_token %}
+                    <button type="submit" class="manage-nav-link manage-nav-btn">خروج</button>
+                </form>
+            </nav>
+        </div>
+    </header>
+    {% endif %}
+
+    <div class="manage-page">
+        {% if messages %}
+        <div class="manage-messages">
+            {% for message in messages %}
+            <div class="manage-alert manage-alert-{{ message.tags|default:'info' }}" role="alert">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

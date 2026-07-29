@@ -1,0 +1,48 @@
+{% extends 'core/base.html' %}
+
+{% block title %}البحث عن النتائج — الخلفاء الراشدين{% endblock %}
+
+{% block content %}
+<div class="arch-card">
+    <div class="arch-top"></div>
+    <div class="card-body">
+        <h2 class="card-title">استعلام عن النتائج</h2>
+        <p class="card-desc">أدخل الرقم القومي للاطلاع على نتيجتك في مسابقة القرآن الكريم</p>
+
+        {% if error %}
+        <div class="alert alert-error" role="alert">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+            </svg>
+            {{ error }}
+        </div>
+        <div style="height: 1rem;"></div>
+        {% endif %}
+
+        <form class="search-form" method="post" action="{% url 'search' %}" novalidate>
+            {% csrf_token %}
+            <div class="input-group">
+                <label for="participant_id">الرقم القومي</label>
+                <input
+                    type="text"
+                    id="participant_id"
+                    name="participant_id"
+                    value="{{ query }}"
+                    placeholder="مثال: 29501011234567"
+                    maxlength="14"
+                    autocomplete="off"
+                    inputmode="numeric"
+                    autofocus
+                    required
+                >
+            </div>
+            <button type="submit" class="btn-search">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                </svg>
+                عرض النتيجة
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends 'core/manage/base_manage.html' %}
+
+{% block title %}تسجيل الدخول — لوحة الإدارة{% endblock %}
+
+{% block content %}
+<div class="manage-login-wrap">
+    <div class="manage-login-card arch-card">
+        <div class="arch-top"></div>
+        <div class="card-body">
+            <div class="manage-login-header">
+                {% load static %}
+                <img src="{% static 'core/images/logo.png' %}" alt="" class="manage-login-logo">
+                <h1>لوحة الإدارة</h1>
+                <p>سجّل الدخول لإدارة نتائج المسابقة</p>
+            </div>
+
+            {% if error %}
+            <div class="manage-alert manage-alert-error">{{ error }}</div>
+            {% endif %}
+
+            <form method="post" class="manage-form" novalidate>
+                {% csrf_token %}
+                {% for field in form %}
+                <div class="form-field{% if field.errors %} has-error{% endif %}">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% for err in field.errors %}
+                    <span class="field-error">{{ err }}</span>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+                <button type="submit" class="btn-primary">دخول</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

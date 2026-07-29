@@ -1,0 +1,46 @@
+{% extends 'core/manage/base_manage.html' %}
+
+{% block title %}{{ title }} — لوحة الإدارة{% endblock %}
+
+{% block content %}
+<div class="manage-container manage-container-narrow">
+    <div class="manage-header-row">
+        <div>
+            <a href="{% url 'manage_dashboard' %}" class="back-link-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+                العودة للقائمة
+            </a>
+            <h1 class="manage-page-title">{{ title }}</h1>
+        </div>
+    </div>
+
+    <div class="manage-panel arch-card">
+        <div class="card-body">
+            <form method="post" class="manage-form manage-form-grid" novalidate>
+                {% csrf_token %}
+
+                {% for field in form %}
+                <div class="form-field{% if field.errors %} has-error{% endif %}{% if field.name == 'rank' %} form-field-optional{% endif %}">
+                    <label for="{{ field.id_for_label }}">
+                        {{ field.label }}
+                        {% if field.name == 'rank' %}<span class="optional-tag">اختياري</span>{% endif %}
+                    </label>
+                    {{ field }}
+                    {% if field.help_text %}
+                    <span class="field-help">{{ field.help_text }}</span>
+                    {% endif %}
+                    {% for err in field.errors %}
+                    <span class="field-error">{{ err }}</span>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">{{ submit_label }}</button>
+                    <a href="{% url 'manage_dashboard' %}" class="btn-ghost">إلغاء</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
