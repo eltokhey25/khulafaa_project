@@ -37,3 +37,6 @@ Thumbs.db
 temp.txt
 xyz.py
 logo.jpg
+
+# Old deployment example (replaced by pythonanywhere_wsgi.py)
+pythonanywhere_wsgi.example.py
