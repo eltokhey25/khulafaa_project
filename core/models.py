@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 
 class Participant(models.Model):
@@ -14,6 +15,14 @@ class Participant(models.Model):
     parts_count = models.PositiveIntegerField(
         'عدد الأجزاء',
         choices=[(i, f'{i} جزء') for i in range(1, 31)],
+    )
+    registration_number = models.CharField(
+        'رقم الاستمارة',
+        max_length=20,
+        unique=True,
+        blank=True,
+        null=True,
+        db_index=True,
     )
     rank = models.PositiveIntegerField('الترتيب', null=True, blank=True)
     result = models.CharField(
@@ -32,3 +41,20 @@ class Participant(models.Model):
 
     def __str__(self):
         return f'{self.name} ({self.participant_id})'
+
+    def save(self, *args, **kwargs):
+        # توليد رقم الاستمارة تلقائيًا
+        if not self.registration_number:
+            year = timezone.now().year
+            last = Participant.objects.filter(
+                registration_number__startswith=f'KH-{year}-'
+            ).order_by('-registration_number').first()
+            if last and last.registration_number:
+                try:
+                    last_num = int(last.registration_number.split('-')[-1])
+                except (ValueError, IndexError):
+                    last_num = 0
+            else:
+                last_num = 0
+            self.registration_number = f'KH-{year}-{last_num + 1:04d}'
+        super().save(*args, **kwargs)

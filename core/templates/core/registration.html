@@ -9,16 +9,6 @@
         <h2 class="card-title">تسجيل استمارة جديدة</h2>
         <p class="card-desc">املأ البيانات التالية للتسجيل في مسابقة القرآن الكريم</p>
 
-        {% if success %}
-        <div class="alert" role="alert" style="background:#ECFDF5;color:#065F46;border:1px solid #A7F3D0;">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:20px;height:20px;flex-shrink:0;">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            تم تسجيل الاستمارة بنجاح! يمكنك الاستعلام عن النتيجة لاحقًا بالرقم القومي.
-        </div>
-        <div style="height: 1rem;"></div>
-        {% endif %}
-
         <form method="post" class="search-form" novalidate>
             {% csrf_token %}
 
