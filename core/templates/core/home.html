@@ -1,0 +1,49 @@
+{% extends 'core/base.html' %}
+
+{% block title %}الرئيسية — الخلفاء الراشدين{% endblock %}
+
+{% block content %}
+<div class="arch-card">
+    <div class="arch-top"></div>
+    <div class="card-body">
+        <h2 class="card-title">أهلاً بك في مسابقة القرآن الكريم</h2>
+        <p class="card-desc">اختر ما تريد:</p>
+
+        <div style="display: grid; grid-template-columns: 1fr; gap: 1rem; margin-top: 1.5rem;">
+
+            <!-- زرار تسجيل استمارة -->
+            <a href="{% url 'register' %}" style="display: block; text-decoration: none; background: linear-gradient(135deg, #134E5E, #007A8B); color: white; border-radius: 16px; padding: 2rem 1.5rem; text-align: center; transition: transform 0.3s ease, box-shadow 0.3s ease; box-shadow: 0 4px 16px rgba(19,78,94,0.22);">
+                <div style="display: inline-flex; align-items: center; justify-content: center; width: 60px; height: 60px; background: rgba(255,255,255,0.15); border-radius: 50%; margin-bottom: 0.75rem;">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:32px;height:32px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
+                </div>
+                <div style="font-size: 1.4rem; font-weight: 800; font-family: 'Amiri', serif;">تسجيل استمارة جديدة</div>
+                <div style="font-size: 0.9rem; opacity: 0.85; margin-top: 0.35rem;">سجّل بياناتك للمشاركة في المسابقة</div>
+            </a>
+
+            <!-- زرار عرض النتيجة -->
+            <a href="{% url 'search' %}" style="display: block; text-decoration: none; background: linear-gradient(135deg, #B48C45, #D4AF7A); color: white; border-radius: 16px; padding: 2rem 1.5rem; text-align: center; transition: transform 0.3s ease, box-shadow 0.3s ease; box-shadow: 0 4px 16px rgba(180,140,69,0.3);">
+                <div style="display: inline-flex; align-items: center; justify-content: center; width: 60px; height: 60px; background: rgba(255,255,255,0.2); border-radius: 50%; margin-bottom: 0.75rem;">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:32px;height:32px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                    </svg>
+                </div>
+                <div style="font-size: 1.4rem; font-weight: 800; font-family: 'Amiri', serif;">عرض النتيجة</div>
+                <div style="font-size: 0.9rem; opacity: 0.9; margin-top: 0.35rem;">استعلم عن نتيجتك بالرقم القومي</div>
+            </a>
+
+            <!-- زرار عرض السجل -->
+            <a href="{% url 'participant_history_search' %}" style="display: block; text-decoration: none; background: #FDF8F0; color: #134E5E; border: 2px solid rgba(180,140,69,0.3); border-radius: 16px; padding: 1.25rem 1.5rem; text-align: center; transition: all 0.3s ease;">
+                <div style="display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 700; font-size: 1rem;">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:22px;height:22px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                    </svg>
+                    عرض سجل المشاركات السابقة
+                </div>
+            </a>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

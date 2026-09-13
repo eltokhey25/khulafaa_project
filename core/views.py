@@ -4,6 +4,11 @@ from .models import Participant
 from .utils import normalize_digits
 
 
+def home(request):
+    """الصفحة الرئيسية — اختيار بين التسجيل والنتيجة."""
+    return render(request, 'core/home.html')
+
+
 def search(request):
     error = None
     query = ''

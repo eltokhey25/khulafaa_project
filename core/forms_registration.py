@@ -1,4 +1,5 @@
 from django import forms
+from django.utils import timezone
 
 from .models import Participant
 from .utils import normalize_digits
@@ -49,28 +50,19 @@ class RegistrationForm(forms.ModelForm):
     def clean_participant_id(self):
         raw = self.cleaned_data['participant_id']
         normalized = normalize_digits(raw)
-
         if not normalized.isdigit():
             raise forms.ValidationError('الرقم القومي يجب أن يحتوي على أرقام فقط.')
-
         if len(normalized) != 14:
             raise forms.ValidationError('الرقم القومي يجب أن يكون 14 رقمًا.')
-
-        if Participant.objects.filter(participant_id=normalized).exists():
-            raise forms.ValidationError('هذا الرقم القومي مسجّل مسبقًا.')
-
         return normalized
 
     def clean_phone(self):
         raw = self.cleaned_data['phone']
         normalized = normalize_digits(raw)
-
         if not normalized.isdigit():
             raise forms.ValidationError('رقم الهاتف يجب أن يحتوي على أرقام فقط.')
-
         if len(normalized) < 7 or len(normalized) > 15:
             raise forms.ValidationError('رقم الهاتف غير صحيح.')
-
         return normalized
 
     def clean_name(self):
@@ -84,3 +76,28 @@ class RegistrationForm(forms.ModelForm):
         if len(sheikh) < 3:
             raise forms.ValidationError('اسم الشيخ قصير جدًا.')
         return sheikh
+
+    def clean(self):
+        cleaned = super().clean()
+        participant_id = cleaned.get('participant_id')
+        parts_count = cleaned.get('parts_count')
+        if not participant_id or not parts_count:
+            return cleaned
+        current_year = timezone.now().year
+        previous = Participant.objects.filter(
+            participant_id=participant_id,
+        ).order_by('-season_year').first()
+        if previous:
+            if previous.season_year == current_year:
+                raise forms.ValidationError(
+                    f'عفواً، أنت سجلت قبل كده في موسم {current_year}. '
+                    f'رقم استمارتك: {previous.registration_number}. '
+                    'لا يمكن التسجيل مرتين في نفس الموسم.'
+                )
+            if parts_count <= previous.parts_count:
+                raise forms.ValidationError(
+                    f'عفواً، أنت سجلت في موسم {previous.season_year} '
+                    f'بعدد {previous.parts_count} جزء. '
+                    f'لازم تسجل بعدد أجزاء أكبر من {previous.parts_count}.'
+                )
+        return cleaned

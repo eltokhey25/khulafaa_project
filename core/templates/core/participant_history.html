@@ -1,0 +1,70 @@
+{% extends 'core/base.html' %}
+
+{% block title %}سجل المشاركات — الخلفاء الراشدين{% endblock %}
+
+{% block content %}
+<div class="arch-card">
+    <div class="arch-top"></div>
+    <div class="card-body">
+        <h2 class="card-title">سجل المشاركات</h2>
+        <p class="card-desc">عرض جميع مشاركات الطالب في المواسم السابقة</p>
+
+        {% if error %}
+        <div class="alert alert-error" role="alert">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+            </svg>
+            {{ error }}
+        </div>
+        <div style="text-align: center; margin-top: 1.5rem;">
+            <a href="{% url 'search' %}" class="back-link">رجوع للرئيسية</a>
+        </div>
+        {% else %}
+
+        <div style="background: linear-gradient(135deg, rgba(180,140,69,0.12), rgba(180,140,69,0.04)); border: 2px solid rgba(180,140,69,0.35); border-radius: 16px; padding: 1rem; text-align: center; margin-bottom: 1.5rem;">
+            <div style="font-size: 0.85rem; color: #5A7A82; font-weight: 600;">الرقم القومي</div>
+            <div style="font-size: 1.3rem; font-weight: 800; color: #B48C45; font-family: 'Amiri', serif;">{{ participant_id }}</div>
+        </div>
+
+        {% for record in records %}
+        <div style="background: #FDF8F0; border: 1px solid rgba(180,140,69,0.15); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
+                <div style="font-size: 1.2rem; font-weight: 800; color: #134E5E;">
+                    موسم {{ record.season_year }}
+                </div>
+                <div style="font-size: 0.85rem; color: #5A7A82;">
+                    رقم الاستمارة: <strong>{{ record.registration_number }}</strong>
+                </div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.75rem;">
+                <div>
+                    <div style="font-size: 0.75rem; color: #5A7A82; font-weight: 600;">الاسم</div>
+                    <div style="font-weight: 700; color: #134E5E;">{{ record.name }}</div>
+                </div>
+                <div>
+                    <div style="font-size: 0.75rem; color: #5A7A82; font-weight: 600;">الشيخ المحفظ</div>
+                    <div style="font-weight: 700; color: #134E5E;">{{ record.sheikh_name }}</div>
+                </div>
+                <div>
+                    <div style="font-size: 0.75rem; color: #5A7A82; font-weight: 600;">عدد الأجزاء</div>
+                    <div style="font-weight: 800; color: #B48C45; font-size: 1.15rem;">{{ record.parts_count }} جزء</div>
+                </div>
+            </div>
+            <div style="margin-top: 0.75rem; text-align: left;">
+                <a href="{% url 'registration_print' record.participant_id %}" target="_blank" rel="noopener" style="font-size: 0.85rem; color: #007A8B; font-weight: 600; text-decoration: none;">
+                    🖨️ طباعة الاستمارة
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+
+        <div style="text-align: center; margin-top: 1.5rem;">
+            <a href="{% url 'register' %}" class="btn-search" style="display: inline-flex; width: auto; padding: 0.75rem 1.75rem; text-decoration: none;">
+                تسجيل موسم جديد
+            </a>
+        </div>
+
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

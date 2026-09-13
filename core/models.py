@@ -6,7 +6,6 @@ class Participant(models.Model):
     participant_id = models.CharField(
         'الرقم القومي',
         max_length=14,
-        unique=True,
         db_index=True,
     )
     name = models.CharField('الاسم', max_length=200)
@@ -24,6 +23,11 @@ class Participant(models.Model):
         null=True,
         db_index=True,
     )
+    season_year = models.PositiveIntegerField(
+        'سنة التسجيل',
+        default=timezone.now().year,
+        db_index=True,
+    )
     rank = models.PositiveIntegerField('الترتيب', null=True, blank=True)
     result = models.CharField(
         'النتيجة',
@@ -37,15 +41,21 @@ class Participant(models.Model):
     class Meta:
         verbose_name = 'مشارك'
         verbose_name_plural = 'المشاركون'
-        ordering = [models.F('rank').asc(nulls_last=True), 'participant_id']
+        ordering = ['-season_year', models.F('rank').asc(nulls_last=True), 'participant_id']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['participant_id', 'season_year'],
+                name='unique_participant_per_season',
+            ),
+        ]
 
     def __str__(self):
-        return f'{self.name} ({self.participant_id})'
+        return f'{self.name} ({self.participant_id}) - {self.season_year}'
 
     def save(self, *args, **kwargs):
         # توليد رقم الاستمارة تلقائيًا
         if not self.registration_number:
-            year = timezone.now().year
+            year = self.season_year or timezone.now().year
             last = Participant.objects.filter(
                 registration_number__startswith=f'KH-{year}-'
             ).order_by('-registration_number').first()
@@ -57,4 +67,12 @@ class Participant(models.Model):
             else:
                 last_num = 0
             self.registration_number = f'KH-{year}-{last_num + 1:04d}'
+
+        if not self.season_year:
+            self.season_year = timezone.now().year
+
         super().save(*args, **kwargs)
+
+    @property
+    def parts_label(self):
+        return dict(self._meta.get_field('parts_count').choices).get(self.parts_count, '')

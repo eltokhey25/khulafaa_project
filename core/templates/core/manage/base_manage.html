@@ -26,7 +26,7 @@
             <nav class="manage-nav">
                 <a href="{% url 'manage_dashboard' %}" class="manage-nav-link{% if request.resolver_match.url_name == 'manage_dashboard' %} active{% endif %}">الطلاب</a>
                 <a href="{% url 'manage_add' %}" class="manage-nav-link{% if request.resolver_match.url_name == 'manage_add' %} active{% endif %}">إضافة طالب</a>
-                <a href="{% url 'search' %}" class="manage-nav-link" target="_blank" rel="noopener">عرض الموقع</a>
+                <a href="{% url 'home' %}" class="manage-nav-link" target="_blank" rel="noopener">عرض الموقع</a>
                 <form method="post" action="{% url 'manage_logout' %}" class="manage-logout-form">
                     {% csrf_token %}
                     <button type="submit" class="manage-nav-link manage-nav-btn">خروج</button>
