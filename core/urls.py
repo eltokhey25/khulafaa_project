@@ -1,14 +1,8 @@
-from django.urls import path
-
-from . import views, views_manage
+from django.urls import include, path
 
 urlpatterns = [
-    path('', views.search, name='search'),
-    path('result/<str:participant_id>/', views.result, name='result'),
-    path('manage/login/', views_manage.manage_login, name='manage_login'),
-    path('manage/logout/', views_manage.manage_logout, name='manage_logout'),
-    path('manage/', views_manage.manage_dashboard, name='manage_dashboard'),
-    path('manage/add/', views_manage.manage_add, name='manage_add'),
-    path('manage/edit/<int:pk>/', views_manage.manage_edit, name='manage_edit'),
-    path('manage/delete/<int:pk>/', views_manage.manage_delete, name='manage_delete'),
+    path('', include('core.urls_search')),
+    path('', include('core.urls_registration')),
+    path('', include('core.urls_manage')),
 ]
+

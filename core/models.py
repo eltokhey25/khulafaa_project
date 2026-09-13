@@ -9,8 +9,19 @@ class Participant(models.Model):
         db_index=True,
     )
     name = models.CharField('الاسم', max_length=200)
+    sheikh_name = models.CharField('اسم الشيخ المحفظ', max_length=200)
+    phone = models.CharField('رقم الهاتف', max_length=15)
+    parts_count = models.PositiveIntegerField(
+        'عدد الأجزاء',
+        choices=[(i, f'{i} جزء') for i in range(1, 31)],
+    )
     rank = models.PositiveIntegerField('الترتيب', null=True, blank=True)
-    result = models.CharField('النتيجة', max_length=50)
+    result = models.CharField(
+        'النتيجة',
+        max_length=50,
+        blank=True,
+        default='',
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

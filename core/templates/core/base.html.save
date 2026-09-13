@@ -23,15 +23,6 @@
             </div>
             <h1 class="org-name">الخلفاء الراشدين</h1>
             <p class="org-subtitle">لتحفيظ القرآن الكريم وعلومه</p>
-
-            <div style="margin-top: 1.25rem;">
-                <a href="{% url 'register' %}" class="btn-search" style="display:inline-flex; width:auto; padding: 0.65rem 1.5rem; font-size: 0.95rem;">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" style="width:18px;height:18px;">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                    </svg>
-                    تسجيل استمارة جديدة
-                </a>
-            </div>
         </header>
 
         <main class="main-content">
@@ -43,12 +34,7 @@
         <footer class="site-footer">
             <div class="ornament"><span class="ornament-diamond"></span></div>
             <p>جميع الحقوق محفوظة &copy; {% now "Y" %} — جمعية الخلفاء الراشدين</p>
-            <p class="developer-credit">
-                تطوير:
-                <a href="https://ahmed-medhat.site" target="_blank" rel="noopener">أحمد مدحت</a>
-                و
-                <a href="https://www.facebook.com/share/1C1krHDczH/" target="_blank" rel="noopener">محمد الطوخي</a>
-            </p>
+            <p class="developer-credit">تطوير: <a href="https://ahmed-medhat.site" target="_blank" rel="noopener">أحمد مدحت</a></p>
         </footer>
     </div>
 
