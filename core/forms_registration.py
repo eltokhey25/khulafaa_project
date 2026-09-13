@@ -50,19 +50,25 @@ class RegistrationForm(forms.ModelForm):
     def clean_participant_id(self):
         raw = self.cleaned_data['participant_id']
         normalized = normalize_digits(raw)
+
         if not normalized.isdigit():
             raise forms.ValidationError('الرقم القومي يجب أن يحتوي على أرقام فقط.')
+
         if len(normalized) != 14:
             raise forms.ValidationError('الرقم القومي يجب أن يكون 14 رقمًا.')
+
         return normalized
 
     def clean_phone(self):
         raw = self.cleaned_data['phone']
         normalized = normalize_digits(raw)
+
         if not normalized.isdigit():
             raise forms.ValidationError('رقم الهاتف يجب أن يحتوي على أرقام فقط.')
+
         if len(normalized) < 7 or len(normalized) > 15:
             raise forms.ValidationError('رقم الهاتف غير صحيح.')
+
         return normalized
 
     def clean_name(self):
@@ -81,23 +87,47 @@ class RegistrationForm(forms.ModelForm):
         cleaned = super().clean()
         participant_id = cleaned.get('participant_id')
         parts_count = cleaned.get('parts_count')
+
         if not participant_id or not parts_count:
             return cleaned
+
         current_year = timezone.now().year
+
+        # ترتيب الأجزاء عشان نقدر نقارن
+        PARTS_ORDER = {
+            '1': 1,
+            '2': 2,
+            '3': 3,
+            '4': 4,
+            '5': 5,
+            'quarter': 8,
+            'half': 15,
+            'full': 30,
+        }
+
         previous = Participant.objects.filter(
             participant_id=participant_id,
         ).order_by('-season_year').first()
+
         if previous:
+            # الحالة 1: سجّل في نفس السنة → نرفض
             if previous.season_year == current_year:
                 raise forms.ValidationError(
                     f'عفواً، أنت سجلت قبل كده في موسم {current_year}. '
                     f'رقم استمارتك: {previous.registration_number}. '
                     'لا يمكن التسجيل مرتين في نفس الموسم.'
                 )
-            if parts_count <= previous.parts_count:
+
+            # الحالة 2: سجّل في سنة سابقة بعدد أقل أو نفس العدد → نرفض
+            current_value = PARTS_ORDER.get(parts_count, 0)
+            previous_value = PARTS_ORDER.get(previous.parts_count, 0)
+
+            if current_value <= previous_value:
+                previous_label = previous.get_parts_count_display()
                 raise forms.ValidationError(
                     f'عفواً، أنت سجلت في موسم {previous.season_year} '
-                    f'بعدد {previous.parts_count} جزء. '
-                    f'لازم تسجل بعدد أجزاء أكبر من {previous.parts_count}.'
+                    f'بـ {previous_label}. '
+                    'لازم تسجل بعدد أجزاء أكبر.'
                 )
+
         return cleaned

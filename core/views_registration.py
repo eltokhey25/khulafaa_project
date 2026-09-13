@@ -3,6 +3,7 @@ from django.utils import timezone
 
 from .forms_registration import RegistrationForm
 from .models import Participant
+from .utils import normalize_digits
 
 
 def register(request):
@@ -24,11 +25,13 @@ def register(request):
 
 def registration_success(request, participant_id):
     """صفحة تأكيد التسجيل."""
-    participant = get_object_or_404(
-        Participant,
+    participant = Participant.objects.filter(
         participant_id=participant_id,
-        season_year=timezone.now().year,
-    )
+    ).order_by('-season_year').first()
+
+    if not participant:
+        return redirect('register')
+
     return render(request, 'core/registration_success.html', {
         'participant': participant,
     })
@@ -36,35 +39,20 @@ def registration_success(request, participant_id):
 
 def registration_print(request, participant_id):
     """صفحة الاستمارة للطباعة."""
-    participant = get_object_or_404(
-        Participant,
+    participant = Participant.objects.filter(
         participant_id=participant_id,
-        season_year=timezone.now().year,
-    )
+    ).order_by('-season_year').first()
+
+    if not participant:
+        return redirect('register')
+
     return render(request, 'core/registration_print.html', {
         'participant': participant,
     })
 
 
-def participant_history(request, participant_id):
-    """صفحة عرض تاريخ المشاركات لطالب."""
-    records = Participant.objects.filter(
-        participant_id=participant_id,
-    ).order_by('-season_year')
-
-    if not records.exists():
-        return render(request, 'core/participant_history.html', {
-            'error': 'لا توجد سجلات لهذا الرقم القومي.',
-        })
-
-    return render(request, 'core/participant_history.html', {
-        'records': records,
-        'participant_id': participant_id,
-    })
 def participant_history_search(request):
     """صفحة البحث عن سجل طالب."""
-    from .utils import normalize_digits
-
     error = None
     participant_id = ''
 
@@ -82,4 +70,23 @@ def participant_history_search(request):
     return render(request, 'core/participant_history_search.html', {
         'error': error,
         'participant_id': participant_id,
+    })
+
+
+def participant_history(request, participant_id):
+    """صفحة عرض تاريخ المشاركات لطالب."""
+    normalized = normalize_digits(participant_id)
+
+    records = Participant.objects.filter(
+        participant_id=normalized,
+    ).order_by('-season_year')
+
+    if not records.exists():
+        return render(request, 'core/participant_history.html', {
+            'error': 'لا توجد سجلات لهذا الرقم القومي.',
+        })
+
+    return render(request, 'core/participant_history.html', {
+        'records': records,
+        'participant_id': normalized,
     })

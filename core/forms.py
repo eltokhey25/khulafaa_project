@@ -7,13 +7,14 @@ from .utils import normalize_digits
 class ParticipantForm(forms.ModelForm):
     class Meta:
         model = Participant
-        fields = ('name', 'participant_id', 'sheikh_name', 'phone', 'parts_count', 'result', 'rank')
+        fields = ('name', 'participant_id', 'sheikh_name', 'phone', 'parts_count', 'season_year', 'result', 'rank')
         labels = {
             'name': 'اسم الطالب',
             'participant_id': 'الرقم القومي',
             'sheikh_name': 'اسم الشيخ المحفظ',
             'phone': 'رقم الهاتف',
             'parts_count': 'عدد الأجزاء',
+            'season_year': 'الموسم',
             'result': 'النتيجة',
             'rank': 'الترتيب',
         }
@@ -46,6 +47,12 @@ class ParticipantForm(forms.ModelForm):
             'parts_count': forms.Select(attrs={
                 'class': 'form-input',
             }),
+            'season_year': forms.NumberInput(attrs={
+                'class': 'form-input',
+                'placeholder': 'مثال: 2026',
+                'min': '2020',
+                'max': '2100',
+            }),
             'result': forms.TextInput(attrs={
                 'class': 'form-input',
                 'placeholder': 'مثال: 95.50 أو ممتاز',
@@ -57,6 +64,7 @@ class ParticipantForm(forms.ModelForm):
             }),
         }
         help_texts = {
+            'season_year': 'السنة اللي الطالب مسجّل فيها (مثال: 2025)',
             'rank': 'اتركه فارغًا إذا لم يُحدَّد ترتيب بعد',
         }
 
@@ -73,8 +81,21 @@ class ParticipantForm(forms.ModelForm):
         qs = Participant.objects.filter(participant_id=normalized)
         if self.instance.pk:
             qs = qs.exclude(pk=self.instance.pk)
-        if qs.exists():
-            raise forms.ValidationError('هذا الرقم القومي مسجّل مسبقًا.')
+        # لو نفس الطالب ومسجّل في نفس الموسم → نرفض
+        if qs.filter(season_year=self.cleaned_data.get('season_year')).exists():
+            raise forms.ValidationError('هذا الرقم القومي مسجّل بالفعل في هذا الموسم.')
+
+        return normalized
+
+    def clean_phone(self):
+        raw = self.cleaned_data['phone']
+        normalized = normalize_digits(raw)
+
+        if not normalized.isdigit():
+            raise forms.ValidationError('رقم الهاتف يجب أن يحتوي على أرقام فقط.')
+
+        if len(normalized) < 7 or len(normalized) > 15:
+            raise forms.ValidationError('رقم الهاتف غير صحيح.')
 
         return normalized
 

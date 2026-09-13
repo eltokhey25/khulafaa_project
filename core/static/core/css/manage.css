@@ -646,3 +646,38 @@
         width: 100%;
     }
 }
+
+/* ══════════════════════════════════════
+   خلايا المواسم (عدد الأجزاء + النتيجة + الترتيب)
+   ══════════════════════════════════════ */
+.season-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    align-items: flex-start;
+    text-align: right;
+}
+
+.season-cell .score-badge {
+    font-size: 0.9rem;
+}
+
+.season-cell .season-result {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.season-cell .season-result strong {
+    color: var(--gold);
+    font-weight: 800;
+}
+
+.season-cell .season-rank {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.season-cell .season-rank strong {
+    color: var(--teal-deep);
+    font-weight: 700;
+}

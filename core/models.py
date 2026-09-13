@@ -11,9 +11,21 @@ class Participant(models.Model):
     name = models.CharField('الاسم', max_length=200)
     sheikh_name = models.CharField('اسم الشيخ المحفظ', max_length=200)
     phone = models.CharField('رقم الهاتف', max_length=15)
-    parts_count = models.PositiveIntegerField(
+    PARTS_CHOICES = [
+        ('1', 'جزء واحد'),
+        ('2', 'جزئين'),
+        ('3', 'ثلاثة أجزاء'),
+        ('4', 'أربعة أجزاء'),
+        ('5', 'خمسة أجزاء'),
+        ('quarter', 'ربع القرآن'),
+        ('half', 'نصف القرآن'),
+        ('full', 'القرآن كاملًا'),
+    ]
+
+    parts_count = models.CharField(
         'عدد الأجزاء',
-        choices=[(i, f'{i} جزء') for i in range(1, 31)],
+        max_length=20,
+        choices=PARTS_CHOICES,
     )
     registration_number = models.CharField(
         'رقم الاستمارة',
