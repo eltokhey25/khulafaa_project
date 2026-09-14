@@ -3,14 +3,6 @@ from django.utils import timezone
 
 
 class Participant(models.Model):
-    participant_id = models.CharField(
-        'الرقم القومي',
-        max_length=14,
-        db_index=True,
-    )
-    name = models.CharField('الاسم', max_length=200)
-    sheikh_name = models.CharField('اسم الشيخ المحفظ', max_length=200)
-    phone = models.CharField('رقم الهاتف', max_length=15)
     PARTS_CHOICES = [
         ('1', 'جزء واحد'),
         ('2', 'جزئين'),
@@ -22,6 +14,14 @@ class Participant(models.Model):
         ('full', 'القرآن كاملًا'),
     ]
 
+    participant_id = models.CharField(
+        'الرقم القومي',
+        max_length=14,
+        db_index=True,
+    )
+    name = models.CharField('الاسم', max_length=200)
+    sheikh_name = models.CharField('اسم الشيخ المحفظ', max_length=200)
+    phone = models.CharField('رقم الهاتف', max_length=15)
     parts_count = models.CharField(
         'عدد الأجزاء',
         max_length=20,
@@ -87,4 +87,11 @@ class Participant(models.Model):
 
     @property
     def parts_label(self):
-        return dict(self._meta.get_field('parts_count').choices).get(self.parts_count, '')
+        return dict(self.PARTS_CHOICES).get(self.parts_count, '')
+
+    @property
+    def result_display(self):
+        """عرض النتيجة بصيغة '40/50'."""
+        if not self.result:
+            return '—'
+        return f'{self.result}/50'
